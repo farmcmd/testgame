@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>「臺大。森林。學院2.0」里山生態廊道 農田微棲地-生態導覽活動小測驗</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+        
+        /* --- CARD GAME STYLES --- */
+        .perspective {
+            perspective: 1000px;
+        }
+        .card {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: transparent;
+            cursor: pointer;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+        }
+        .card.is-flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 0.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem;
+        }
+        .card-front {
+            background-color: #4ade80; /* green-400 */
+            color: white;
+            border: 4px solid #166534; /* green-800 */
+            font-size: 3rem;
+        }
+        .card-back {
+            background-color: #f0fdf4; /* green-50 */
+            color: #1a202c;
+            transform: rotateY(180deg);
+            border: 4px solid #4ade80; /* green-400 */
+        }
+        /* --- END CARD GAME STYLES --- */
+
+        /* --- PARTNER REGISTRATION STYLES --- */
+        .partner-slot {
+            background-color: #f0fdf4; /* green-50 */
+            border: 2px solid #4ade80; /* green-400 */
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .partner-avatar {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .partner-name-input, .discussion-textarea { /* Added discussion-textarea */
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #9ca3af; /* gray-400 */
+            border-radius: 0.25rem;
+            text-align: center;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        .partner-name-input::placeholder, .discussion-textarea::placeholder { /* Added discussion-textarea */
+            color: #9ca3af; /* gray-400 */
+        }
+         /* Specific style for textarea alignment */
+        .discussion-textarea {
+            text-align: left; /* Align text left for better readability */
+            min-height: 80px; /* Give some initial height */
+            border-color: #cbd5e1; /* gray-300 for discussion text area border */
+        }
+         /* Style for Export Button */
+        .export-button {
+            display: inline-block;
+            background-color: #22c55e; /* green-500 */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: none;
+            font-size: 1.1rem;
+        }
+        .export-button:hover {
+            background-color: #16a34a; /* green-600 */
+        }
+        /* --- END PARTNER REGISTRATION STYLES --- */
+
+        /* --- FIELD TYPE STYLES --- */
+        .field-type-option {
+            display: flex;
+            flex-wrap: wrap; 
+            align-items: center;
+            background-color: #f0fdf4; 
+            border: 2px solid #a7f3d0; 
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .field-type-option:hover {
+            border-color: #4ade80; 
+        }
+        .field-type-option input[type="radio"] {
+            margin-right: 0.75rem;
+            accent-color: #166534; 
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+        .field-type-option.selected {
+            background-color: #d1fae5; 
+            border-color: #166534; 
+        }
+        .field-type-option.selected span {
+            font-weight: bold;
+        }
+        #other-field-type-details {
+             border-color: #9ca3af; 
+        }
+        /* --- END FIELD TYPE STYLES --- */
+
+        /* --- DANGER STYLES --- */
+        .danger-option {
+            display: flex;
+            align-items: center;
+            background-color: #fef2f2; 
+            border: 2px solid #fecaca; 
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .danger-option:hover {
+            border-color: #f87171; 
+        }
+        .danger-option input[type="checkbox"] {
+            margin-right: 0.75rem;
+            accent-color: #b91c1c; 
+            width: 1.25rem;
+            height: 1.25rem;
+            flex-shrink: 0;
+        }
+        .danger-option.selected {
+            background-color: #fee2e2; 
+            border-color: #b91c1c; 
+        }
+        .danger-option.selected span {
+            font-weight: bold;
+            color: #b91c1c; 
+        }
+        #other-dangers-details input {
+             border-color: #fecaca; 
+        }
+        /* --- END DANGER STYLES --- */
+
+         /* --- BENEFIT STYLES --- */
+        .benefit-option {
+            display: flex;
+            align-items: center;
+            background-color: #eff6ff; 
+            border: 2px solid #bfdbfe; 
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .benefit-option:hover {
+            border-color: #60a5fa; 
+        }
+        .benefit-option input[type="checkbox"] {
+            margin-right: 0.75rem;
+            accent-color: #1e40af; 
+            width: 1.25rem;
+            height: 1.25rem;
+            flex-shrink: 0;
+        }
+        .benefit-option.selected {
+            background-color: #dbeafe; 
+            border-color: #1e40af; 
+        }
+        .benefit-option.selected span {
+            font-weight: bold;
+            color: #1e40af; 
+        }
+        #other-benefits-details input {
+             border-color: #bfdbfe; 
+        }
+        /* --- END BENEFIT STYLES --- */
+
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0fdf4;
+        }
+        .game-scene {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            max-width: 1200px;
+            margin: auto;
+            background: linear-gradient(to bottom, #87ceeb 30%, #a1d9a3 30%);
+            overflow: hidden;
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border: 8px solid #654321;
+        }
+        #connection-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 15;
+        }
+        .forest { position: absolute; top: 0; left: 0; width: 35%; height: 50%; background: #228b22; clip-path: polygon(0 0, 100% 0, 100% 60%, 80% 100%, 0 100%); z-index: 1; }
+        .low-mountain { position: absolute; top: 5%; left: 20%; width: 40%; height: 40%; background: #556b2f; border-radius: 50% 50% 0 0; z-index: 0; }
+        .farm-plot { position: absolute; background-color: #f5deb3; border: 2px solid #cd853f; }
+        .farm-1 { top: 45%; left: 5%; width: 30%; height: 25%; transform: skew(-15deg); z-index: 2;}
+        .farm-2 { top: 50%; left: 40%; width: 35%; height: 30%; background-color: #d2b48c; z-index: 2;}
+        .farm-3 { top: 75%; left: 10%; width: 35%; height: 20%; transform: skew(10deg); z-index: 2;}
+        .stream { position: absolute; top: 30%; left: 70%; width: 25%; height: 70%; background: #add8e6; clip-path: polygon(20% 0, 40% 0, 75% 100%, 55% 100%); z-index: 5; }
+        .pond { position: absolute; bottom: 5%; right: 5%; width: 25%; height: 20%; background: #4682b4; border-radius: 50%; z-index: 6; }
+        .agricultural-facility { position: absolute; top: 38%; left: 58%; width: 50px; height: 40px; background: #9ca3af; z-index: 4;}
+        .farmhouse { position: absolute; top: 60%; left: 70%; width: 80px; height: 60px; background: #d2691e; z-index: 10;}
+        .farmhouse::after { content: ''; position: absolute; top: -30px; left: 0; width: 0; height: 0; border-left: 40px solid transparent; border-right: 40px solid transparent; border-bottom: 30px solid #a0522d; }
+        .road { position: absolute; top: 30%; left: 0; width: 100%; height: 8%; background: #696969; z-index: 3; }
+        .landscape-label { position: absolute; color: white; background-color: rgba(0, 0, 0, 0.6); padding: 2px 8px; border-radius: 6px; font-size: 1rem; font-weight: bold; z-index: 20; pointer-events: none; }
+        .game-icon { position: absolute; font-size: 1rem; text-align: center; transition: all 1s ease-in-out; z-index: 25; }
+        .game-icon span { display: block; font-size: 0.6rem; font-weight: bold; color: #000; background-color: rgba(255,255,255,0.5); border-radius: 4px; padding: 0 2px;}
+        .disturbance-icon { transition: transform 0.5s ease-out; background: none !important; }
+        .disturbance-icon .icon-symbol { font-size: 2.5rem; color: red; animation: pulse 1.5s infinite; text-shadow: 0 0 5px white; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        @keyframes move-randomly { 0% { transform: translate(0, 0); } 25% { transform: translate(var(--x1), var(--y1)); } 50% { transform: translate(var(--x2), var(--y2)); } 75% { transform: translate(var(--x3), var(--y3)); } 100% { transform: translate(0, 0); } }
+        .animal.active { animation: move-randomly 10s infinite; }
+        
+        .drop-zone { position: absolute; border: 3px dashed rgba(255, 0, 0, 0.7); background: rgba(255, 100, 100, 0.2); border-radius: 10px; z-index: 35; transition: background-color 0.3s; cursor: pointer; }
+        
+        .drop-zone.hovered { background: rgba(255, 100, 100, 0.5); }
+        .drop-zone.occupied { border-style: solid; border-color: #228b22; background-color: transparent; }
+        .facility { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; padding: 0.25rem 0.5rem; }
+        .facility.selected { box-shadow: 0 0 15px yellow; transform: scale(1.05); }
+        .facility.placed { opacity: 0.4; cursor: not-allowed; background-color: #d1d5db; }
+        .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; display: flex; justify-content: center; align-items: center; }
+        
+        #animal-pen {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+        .pen-animal {
+            transition: opacity 0.5s;
+            font-size: 1.8rem;
+            background-color: rgba(255,255,255,0.8);
+            border-radius: 5px;
+            padding: 2px;
+            line-height: 1;
+        }
+        #magic-wand-cursor {
+            position: fixed;
+            font-size: 2.5rem;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-10px, -40px);
+            transition: opacity 0.2s;
+            opacity: 0;
+            display: none;
+        }
+        #score-display {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 5px 15px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a202c;
+            z-index: 40;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+         /* Utility class to hide elements */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-green-50 text-gray-800 p-4 lg:p-8">
+    <div id="magic-wand-cursor">🪄</div>
+    <div id="game-container" class="max-w-7xl mx-auto">
+        
+        <!-- --- CARD GAME HTML --- -->
+        <div id="card-game-container" class="mb-8 p-4 bg-white rounded-lg shadow-inner">
+            <h2 id="card-game-title" class="text-2xl font-bold text-center text-green-800 mb-2">生態分組遊戲</h2>
+            <p id="card-game-prompt" class="text-center text-gray-600 mb-4 h-12">(點擊卡牌查看你的分組)</p>
+            <div id="card-grid" class="grid grid-cols-6 gap-2 md:gap-4 max-w-2xl mx-auto perspective">
+                <!-- Cards will be injected here by JS -->
+            </div>
+             <p class="text-center text-gray-700 mt-4 text-sm md:text-base px-2">
+                抽到分組的生物後，立即開始您的角色扮演遊戲，您需要以抽到的生物眼光去看待目前周遭的環境，並找到您的夥伴一起探險，發現生態環境的問題及解決的辦法。
+            </p>
+        </div>
+        <!-- --- END CARD GAME HTML --- -->
+
+        <!-- --- PARTNER REGISTRATION SECTION --- -->
+        <div id="partner-registration" class="my-8 p-4 bg-white rounded-lg shadow-inner">
+            <h2 class="text-2xl font-bold text-center text-green-800 mb-4">第二階段：夥伴報到</h2>
+            <p class="text-center text-gray-600 mb-6">請在下方輸入7位夥伴的名字：</p>
+            <div id="partner-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 max-w-6xl mx-auto">
+                <!-- 7 partner slots will be generated by JS -->
+            </div>
+        </div>
+        <!-- --- END PARTNER REGISTRATION SECTION --- -->
+
+         <!-- --- FIELD TYPE SELECTION SECTION --- -->
+        <div id="field-type-selection" class="my-8 p-4 bg-white rounded-lg shadow-inner">
+            <h2 class="text-2xl font-bold text-center text-green-800 mb-4">第三階段：場域型態</h2>
+            <p class="text-center text-gray-600 mb-6">請選擇您所在的場域型態：</p>
+            <div id="field-type-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <!-- Options will be generated by JS -->
+            </div>
+        </div>
+        <!-- --- END FIELD TYPE SELECTION SECTION --- -->
+
+        <!-- --- DANGER SELECTION SECTION --- -->
+        <div id="danger-selection" class="my-8 p-4 bg-white rounded-lg shadow-inner">
+            <h2 class="text-2xl font-bold text-center text-green-800 mb-4">第四階段：探險危害</h2>
+            <p class="text-center text-gray-600 mb-6">請選擇您在探險中遭遇了哪些對我們隊伍(族群)有嚴重危害的危險：</p>
+            <div id="danger-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                <!-- Dangers will be generated by JS -->
+            </div>
+            <!-- Container for 'Other' details -->
+            <div id="other-dangers-details" class="hidden mt-4 max-w-4xl mx-auto space-y-2">
+                <!-- 5 text inputs will be generated by JS -->
+            </div>
+        </div>
+        <!-- --- END DANGER SELECTION SECTION --- -->
+
+         <!-- --- ECOSYSTEM BENEFITS SECTION --- -->
+        <div id="ecosystem-benefits-selection" class="my-8 p-4 bg-white rounded-lg shadow-inner">
+            <h2 class="text-2xl font-bold text-center text-green-800 mb-4">第五階段：生態好處</h2>
+            <p class="text-center text-gray-600 mb-6">告訴大家我的族群存在能夠帶來甚麼生態好處(生態服務)：</p>
+            <div id="benefits-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+                <!-- Benefits will be generated by JS -->
+            </div>
+            <!-- Container for 'Other' details -->
+            <div id="other-benefits-details" class="hidden mt-4 max-w-4xl mx-auto space-y-2">
+                <!-- 5 text inputs will be generated by JS -->
+            </div>
+        </div>
+        <!-- --- END ECOSYSTEM BENEFITS SECTION --- -->
+
+         <!-- --- DISCUSSION SECTION --- -->
+        <div id="discussion-section" class="my-8 p-4 bg-white rounded-lg shadow-inner">
+            <h2 class="text-2xl font-bold text-center text-green-800 mb-4">第六階段：討論交流</h2>
+            <div class="max-w-4xl mx-auto space-y-4">
+                <div>
+                    <label for="habitat-needed" class="block text-gray-700 font-semibold mb-2">我們需要什麼樣的棲地？</label>
+                    <textarea id="habitat-needed" name="habitat-needed" rows="4" class="discussion-textarea" placeholder="請描述您的族群理想的棲地樣貌..."></textarea>
+                </div>
+                 <div>
+                    <label for="habitat-improvement" class="block text-gray-700 font-semibold mb-2">我們可以如何改善？</label>
+                    <textarea id="habitat-improvement" name="habitat-improvement" rows="4" class="discussion-textarea" placeholder="請提出改善棲地的具體建議..."></textarea>
+                </div>
+            </div>
+        </div>
+        <!-- --- END DISCUSSION SECTION --- -->
+
+        <!-- --- QUIZ COMPLETION SECTION --- -->
+        <div id="quiz-completion-section" class="my-8 p-4 bg-white rounded-lg shadow-inner">
+            <h2 class="text-2xl font-bold text-center text-green-800 mb-4">第七階段：完成小測驗</h2>
+            <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">
+                綜合前面階段的探險發現與討論結果，現在請根據您對理想棲地的理解，完成下方的「農田微棲地-生態導覽活動小測驗」。選擇合適的生態設施，並將它們放置到最能發揮作用的位置吧！
+            </p>
+        </div>
+        <!-- --- END QUIZ COMPLETION SECTION --- -->
+
+
+        <!-- --- ECOLOGY GAME SECTIONS --- -->
+        <header class="text-center mb-4">
+            <h1 class="text-2xl md:text-3xl font-bold text-green-800">「臺大。森林。學院2.0」里山生態廊道</h1>
+            <h2 class="text-xl md:text-2xl font-semibold text-green-700">農田微棲地-生態導覽活動小測驗</h2>
+        </header>
+
+        <div id="animal-pen-container" class="mb-4">
+            <h3 class="text-md font-bold text-center mb-2">待進駐生物</h3>
+            <div id="animal-pen"></div>
+        </div>
+
+        <div class="flex flex-col">
+            <main class="w-full">
+                <div id="scene" class="game-scene">
+                    <canvas id="connection-canvas"></canvas>
+                    <div id="score-display">分數: 0</div>
+                    <div class="forest"></div>
+                    <div class="low-mountain"></div>
+                    <div class="road"></div>
+                    <div class="farm-plot farm-1"></div>
+                    <div class="farm-plot farm-2"></div>
+                    <div class="farm-plot farm-3"></div>
+                    <div class="stream"></div>
+                    <div class="pond"></div>
+                    <div class="agricultural-facility"></div>
+                    <div class="farmhouse"></div>
+                    <div class="landscape-label" style="top: 5%; left: 5%;">森林</div>
+                    <div class="landscape-label" style="top: 10%; left: 30%;">淺山</div>
+                    <div class="landscape-label" style="top: 55%; left: 15%;">農田</div>
+                    <div class="landscape-label" style="top: 60%; left: 48%;">農田</div>
+                    <div class="landscape-label" style="top: 80%; left: 20%;">農田</div>
+                    <div class="landscape-label" style="top: 40%; left: 78%;">溪流</div>
+                    <div class="landscape-label" style="bottom: 12%; right: 15%;">水塘</div>
+                    <div class="landscape-label" style="top: 48%; left: 57%;">農業設施</div>
+                    <div class="landscape-label" style="top: 72%; left: 72%;">農舍</div>
+                    <div class="landscape-label" style="top: 31%; left: 2%;">山邊道路</div>
+                </div>
+                <div id="connection-counter" class="mt-2 text-center text-lg font-bold text-green-700 bg-green-100 p-2 rounded-lg">
+                    已連接 0 個生態棲地
+                </div>
+            </main>
+
+            <aside class="w-full bg-white p-4 rounded-lg shadow-lg mt-8">
+                <h3 class="text-lg font-bold border-b-2 border-green-600 pb-2 mb-2">生態設施 <span class="text-sm font-normal text-gray-600">(點擊設施，用魔法棒移動到正確位置再點擊)</span></h3>
+                <div id="facilities-list" class="flex flex-wrap gap-2"></div>
+            </aside>
+        </div>
+        <!-- --- END ECOLOGY GAME SECTIONS --- -->
+
+        <!-- --- MOVED EXPORT SECTION --- -->
+        <div id="export-section" class="my-8 p-4 bg-white rounded-lg shadow-inner text-center">
+            <h2 class="text-2xl font-bold text-center text-green-800 mb-4">第八階段：匯出結果</h2>
+            <p class="text-center text-gray-600 mb-6">點擊下方按鈕，將您在各階段填寫的內容與測驗分數匯出成HTML檔案。</p>
+            <button id="export-button" class="export-button">匯出結果</button>
+        </div>
+        <!-- --- END EXPORT SECTION --- -->
+
+
+        <footer class="text-center mt-6 text-xs text-gray-500">
+            <p>共同開發單位：社團法人南投縣水里鄉商圈創生共好協會 | 社團法人南投縣青年農民永續發展協會 | 水里里山基地#里山餐桌團隊 #水里青農 | 水里營林區</p>
+            <p>© 2025 水里永續共好聯盟 | V1.0，「里山餐桌」團隊設計</p>
+        </footer>
+    </div>
+
+    <div id="feedback-modal" class="modal-backdrop hidden"><div class="bg-white rounded-lg shadow-2xl p-6 w-11/12 md:max-w-lg mx-auto transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto"><h3 id="modal-title" class="text-2xl font-bold text-green-700 mb-4">太棒了！</h3><div id="modal-content" class="text-base text-left"></div><button id="modal-close-btn" class="mt-6 w-full bg-green-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">繼續探索</button></div></div>
+    <div id="sroi-modal" class="modal-backdrop hidden"><div class="bg-white rounded-lg shadow-2xl p-6 w-11/12 md:max-w-2xl mx-auto transform transition-all duration-300 scale-95 opacity-0 max-h-[90vh] overflow-y-auto"><h3 class="text-3xl font-bold text-center text-yellow-500 mb-4">恭喜！您已成功串連所有關鍵棲地！</h3><div class="text-base text-left space-y-6"><div><h4 class="text-xl font-bold text-green-800 border-b-2 border-green-200 pb-2 mb-3">👨‍🌾 給農友的永續紅利：生產與生態的雙贏</h4><ul class="list-disc list-inside space-y-2 text-gray-700"><li><b>生態服務增強：</b>透過草帶、濕地吸引來的蜜蜂、瓢蟲、青蛙，能幫助作物授粉、吃掉害蟲，有效減少農藥與肥料成本，讓土地更健康。</li><li><b>品牌價值提升：</b>「為生態耕作」本身就是最棒的故事！生態友善的產品（如石虎米、穿山甲茶）能獲得消費者認同，創造更高的品牌價值與市場區隔。</li><li><b>社會資本累積：</b>展現農場的社會投資報酬率(SROI)，更容易爭取政府補助或企業的ESG合作，並成為社區引以為傲的環境教育場域。</li></ul></div><div><h4 class="text-xl font-bold text-blue-800 border-b-2 border-blue-200 pb-2 mb-3">🤝 我們如何支持生態農友</h4><div class="grid md:grid-cols-2 gap-6"><div><h5 class="font-bold text-lg mb-2">🙋‍♀️ 身為消費者</h5><ul class="list-disc list-inside space-y-2 text-gray-700"><li><b>用新台幣下架：</b>優先購買有產銷履歷、綠色保育標章的產品。</li><li><b>親身體驗與分享：</b>參加食農教育、生態導覽，並在社群分享您的感動。</li><li><b>理解價值差異：</b>了解友善產品的價格，包含了對環境的愛護成本。</li></ul></div><div><h5 class="font-bold text-lg mb-2">🏢 身為企業</h5><ul class="list-disc list-inside space-y-2 text-gray-700"><li><b>實踐 ESG/CSR：</b>將支持生態農業納入企業的永續發展策略中。</li><li><b>企業採購與合作：</b>採購友善農產品作為員工福利或企業贈禮。</li><li><b>投資生態復育：</b>贊助農場的生態設施（如認養一片濕地），作為企業的永續績效。</li></ul></div></div></div></div><button id="sroi-modal-close-btn" class="mt-8 w-full bg-yellow-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-yellow-600 transition-colors text-lg">我明白了！一起為永續努力！</button></div></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // --- CARD GAME LOGIC ---
+        const cardGrid = document.getElementById('card-grid');
+        const cardGameTitle = document.getElementById('card-game-title');
+        const cardGamePrompt = document.getElementById('card-game-prompt');
+        const creatures = ['🐝', '🐢', '🐸', '🐆', '🐔', '🐞']; 
+        let gameCards = [];
+        let lockBoard = false; 
+        let selectedCreature = null; // Variable to store selected creature
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function createCardElement(creature) {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.creature = creature;
+            
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <span>🍃</span>
+                    </div>
+                    <div class="card-back">
+                        <span>${creature}</span>
+                    </div>
+                </div>
+            `;
+            card.addEventListener('click', flipCard);
+            return card;
+        }
+
+        function flipCard() {
+            if (lockBoard) return; 
+            if (this.classList.contains('is-flipped')) return; 
+
+            lockBoard = true; 
+            this.classList.add('is-flipped');
+            
+            selectedCreature = this.dataset.creature; // Store the selected creature
+            
+            if (cardGamePrompt) {
+                cardGamePrompt.innerHTML = `你抽到的是 <strong class="text-xl">${selectedCreature}</strong>！<br>請去找到另一位抽到 <strong class="text-xl">${selectedCreature}</strong> 的夥伴！`;
+            }
+        }
+
+        function initCardGame() {
+            if (!cardGrid) return; 
+            lockBoard = false; 
+            selectedCreature = null; // Reset selected creature
+            cardGrid.innerHTML = ''; 
+            gameCards = shuffle([...creatures]); 
+            gameCards.forEach(creature => {
+                const cardElement = createCardElement(creature);
+                cardGrid.appendChild(cardElement);
+            });
+            if (cardGameTitle) {
+                cardGameTitle.textContent = '生態分組遊戲';
+            }
+            if (cardGamePrompt) {
+                cardGamePrompt.innerHTML = '(點擊卡牌查看你的分組)';
+            }
+        }
+        
+        initCardGame();
+        // --- END CARD GAME LOGIC ---
+
+
+        // --- PARTNER REGISTRATION LOGIC ---
+        function initPartnerRegistration() {
+            const partnerGrid = document.getElementById('partner-grid');
+            if (!partnerGrid) return;
+
+            partnerGrid.innerHTML = ''; 
+            const partnerAvatars = ['🧑‍🌾', '👩‍🔬', '👨‍🏫', '👩‍🎨', '👨‍💻', '👩‍🍳', '🧑‍🚀']; 
+
+            for (let i = 0; i < 7; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'partner-slot';
+                
+                slot.innerHTML = `
+                    <div class="partner-avatar">${partnerAvatars[i]}</div>
+                    <input type="text" class="partner-name-input" placeholder="夥伴 ${i + 1} 名字">
+                `;
+                partnerGrid.appendChild(slot);
+            }
+        }
+        initPartnerRegistration();
+        // --- END PARTNER REGISTRATION LOGIC ---
+
+        // --- FIELD TYPE SELECTION LOGIC ---
+        function initFieldTypeSelection() {
+            const fieldTypeGrid = document.getElementById('field-type-grid');
+            if (!fieldTypeGrid) return;
+
+            fieldTypeGrid.innerHTML = ''; 
+            const fieldTypes = [
+                '郊外', '農田', '公園', '社區', '淺山步道', '其他'
+            ];
+
+            fieldTypes.forEach(type => {
+                const optionLabel = document.createElement('label');
+                optionLabel.className = 'field-type-option';
+                optionLabel.setAttribute('for', `field-type-${type}`);
+
+                let content = `
+                    <input type="radio" name="field-type" id="field-type-${type}" value="${type}">
+                    <span>${type}</span>
+                `;
+                
+                if (type === '其他') {
+                    content += `<input type="text" id="other-field-type-details" class="partner-name-input hidden w-full mt-2" placeholder="請說明...">`;
+                }
+
+                optionLabel.innerHTML = content;
+                fieldTypeGrid.appendChild(optionLabel);
+            });
+
+            const radioButtons = document.querySelectorAll('input[name="field-type"]');
+            const otherDetailsInput = document.getElementById('other-field-type-details');
+
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    document.querySelectorAll('.field-type-option').forEach(label => label.classList.remove('selected'));
+                    const selectedLabel = e.target.closest('.field-type-option');
+                    if (selectedLabel) selectedLabel.classList.add('selected');
+                    if (otherDetailsInput) {
+                        if (e.target.value === '其他') {
+                            otherDetailsInput.classList.remove('hidden');
+                            otherDetailsInput.focus();
+                        } else {
+                            otherDetailsInput.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+
+            if (otherDetailsInput) {
+                otherDetailsInput.addEventListener('click', (e) => e.stopPropagation()); 
+                otherDetailsInput.parentElement.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'INPUT') {
+                        const otherRadio = document.getElementById('field-type-其他');
+                        if (otherRadio && !otherRadio.checked) { // Check if otherRadio exists
+                            otherRadio.checked = true;
+                            otherRadio.dispatchEvent(new Event('change'));
+                        }
+                    }
+                });
+            }
+        }
+        initFieldTypeSelection();
+        // --- END FIELD TYPE SELECTION LOGIC ---
+
+        // --- DANGER SELECTION LOGIC ---
+        function initDangerSelection() {
+            const dangerGrid = document.getElementById('danger-grid');
+            const otherDangersContainer = document.getElementById('other-dangers-details');
+            if (!dangerGrid || !otherDangersContainer) return;
+
+            dangerGrid.innerHTML = ''; 
+            const dangers = [
+                '過度照明', '道路路殺', '化肥使用', 
+                '流浪狗危害', '農藥漂移', '垃圾堆積', 
+                '農機干擾', '排水溝組隔', '密集建築',
+                '更多' 
+            ];
+
+            dangers.forEach(danger => {
+                const optionLabel = document.createElement('label');
+                optionLabel.className = 'danger-option';
+                optionLabel.setAttribute('for', `danger-${danger}`);
+                
+                optionLabel.innerHTML = `
+                    <input type="checkbox" name="danger" id="danger-${danger}" value="${danger}">
+                    <span>${danger}</span>
+                `;
+                dangerGrid.appendChild(optionLabel);
+            });
+
+            otherDangersContainer.innerHTML = ''; 
+            for (let i = 1; i <= 5; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'partner-name-input w-full'; 
+                input.placeholder = `其他危害說明 ${i}...`;
+                input.addEventListener('click', (e) => e.stopPropagation()); 
+                otherDangersContainer.appendChild(input);
+            }
+
+            const checkBoxes = document.querySelectorAll('input[name="danger"]');
+            const otherCheckbox = document.getElementById('danger-更多');
+
+            checkBoxes.forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const selectedLabel = e.target.closest('.danger-option');
+                    if (!selectedLabel) return;
+                    if (e.target.checked) selectedLabel.classList.add('selected');
+                    else selectedLabel.classList.remove('selected');
+
+                    if (e.target.id === 'danger-更多') {
+                        if (e.target.checked) otherDangersContainer.classList.remove('hidden');
+                        else otherDangersContainer.classList.add('hidden');
+                    }
+                });
+            });
+             // Ensure clicking label checks the box for "Other" danger
+             if (otherCheckbox) {
+                 const otherLabel = otherCheckbox.closest('.danger-option');
+                 if(otherLabel){
+                     otherLabel.addEventListener('click', (e)=>{
+                          // Only check the box if the click wasn't on the input itself
+                          // and the checkbox isn't already checked
+                          if(e.target.tagName !== 'INPUT' && !otherCheckbox.checked){
+                              otherCheckbox.checked = true;
+                              // Manually trigger the change event to update styles and show/hide fields
+                              otherCheckbox.dispatchEvent(new Event('change'));
+                         }
+                     });
+                 }
+             }
+        }
+        initDangerSelection();
+        // --- END DANGER SELECTION LOGIC ---
+
+         // --- ECOSYSTEM BENEFITS LOGIC ---
+        function initEcosystemBenefitsSelection() {
+            const benefitsGrid = document.getElementById('benefits-grid');
+            const otherBenefitsContainer = document.getElementById('other-benefits-details');
+            if (!benefitsGrid || !otherBenefitsContainer) return;
+
+            benefitsGrid.innerHTML = ''; // Clear existing
+            const benefits = [
+                '自然的害蟲控制 降低對化學農藥的依賴', 
+                '濕地和水源的重要指標', 
+                '食物鏈動物的食物來源', 
+                '演生態系「清道夫」的角色', 
+                '傳播種子', 
+                '控制囓齒動物（老鼠）的數量', 
+                '完成授粉保護植物多樣性',
+                '其他' // Special case
+            ];
+
+            benefits.forEach(benefit => {
+                 // Use a simpler, more reliable ID generation
+                const benefitId = `benefit-${benefit.replace(/[\s\W]+/g, '-')}`; 
+                const optionLabel = document.createElement('label');
+                optionLabel.className = 'benefit-option';
+                optionLabel.setAttribute('for', benefitId); 
+                
+                optionLabel.innerHTML = `
+                    <input type="checkbox" name="benefit" id="${benefitId}" value="${benefit}">
+                    <span>${benefit}</span>
+                `;
+                benefitsGrid.appendChild(optionLabel);
+            });
+
+            otherBenefitsContainer.innerHTML = ''; // Clear
+            for (let i = 1; i <= 5; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'partner-name-input w-full'; // Reuse style
+                input.placeholder = `其他生態好處說明 ${i}...`;
+                input.addEventListener('click', (e) => e.stopPropagation()); 
+                otherBenefitsContainer.appendChild(input);
+            }
+
+            const checkBoxes = document.querySelectorAll('input[name="benefit"]');
+             // Use the generated ID to find the 'Other' checkbox
+            const otherCheckbox = document.getElementById('benefit-其他'); 
+
+            checkBoxes.forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const selectedLabel = e.target.closest('.benefit-option');
+                    if (!selectedLabel) return;
+                    
+                    if (e.target.checked) {
+                        selectedLabel.classList.add('selected');
+                    } else {
+                        selectedLabel.classList.remove('selected');
+                    }
+
+                    // Special check for 'More' checkbox using its generated ID
+                    if (e.target.id === 'benefit-其他') { 
+                        if (e.target.checked) {
+                            otherBenefitsContainer.classList.remove('hidden');
+                        } else {
+                            otherBenefitsContainer.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+             if (otherCheckbox) {
+                 const otherLabel = otherCheckbox.closest('.benefit-option');
+                 if(otherLabel){
+                     otherLabel.addEventListener('click', (e)=>{
+                          if(e.target.tagName !== 'INPUT' && !otherCheckbox.checked){
+                              otherCheckbox.checked = true;
+                              otherCheckbox.dispatchEvent(new Event('change'));
+                         }
+                     });
+                 }
+             }
+        }
+        initEcosystemBenefitsSelection();
+        // --- END ECOSYSTEM BENEFITS LOGIC ---
+
+         // --- DISCUSSION SECTION LOGIC ---
+        function initDiscussionSection() {
+            const habitatNeeded = document.getElementById('habitat-needed');
+            const habitatImprovement = document.getElementById('habitat-improvement');
+            // Logic for this section can be added here
+        }
+        initDiscussionSection();
+        // --- END DISCUSSION SECTION LOGIC ---
+
+        // --- NEW EXPORT LOGIC ---
+        function exportResults() {
+            let htmlContent = `<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><title>生態活動結果</title>`;
+            htmlContent += `<style> body { font-family: 'Noto Sans TC', sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; } h1, h2 { color: #166534; border-bottom: 2px solid #a7f3d0; padding-bottom: 5px;} h2 { margin-top: 30px; } ul { list-style: disc; margin-left: 20px;} li { margin-bottom: 5px; } .label { font-weight: bold; color: #1e3a8a; } </style>`;
+            htmlContent += `</head><body>`;
+            htmlContent += `<h1>生態導覽活動結果</h1>`;
+
+            // Stage 1: Creature
+            htmlContent += `<h2>第一階段：生態分組遊戲</h2>`;
+            htmlContent += `<p><span class="label">抽到的生物：</span> ${selectedCreature || '尚未選擇'}</p>`;
+
+            // Stage 2: Partners
+            htmlContent += `<h2>第二階段：夥伴報到</h2><ul>`;
+            const partnerInputs = document.querySelectorAll('#partner-grid .partner-name-input');
+            partnerInputs.forEach((input, index) => {
+                htmlContent += `<li><span class="label">夥伴 ${index + 1}：</span> ${input.value || '未填寫'}</li>`;
+            });
+            htmlContent += `</ul>`;
+
+            // Stage 3: Field Type
+            htmlContent += `<h2>第三階段：場域型態</h2>`;
+            const selectedFieldType = document.querySelector('input[name="field-type"]:checked');
+            if (selectedFieldType) {
+                htmlContent += `<p><span class="label">選擇的場域：</span> ${selectedFieldType.value}</p>`;
+                if (selectedFieldType.value === '其他') {
+                    const otherDetails = document.getElementById('other-field-type-details')?.value;
+                    htmlContent += `<p><span class="label">其他說明：</span> ${otherDetails || '未填寫'}</p>`;
+                }
+            } else {
+                htmlContent += `<p>尚未選擇場域型態</p>`;
+            }
+
+            // Stage 4: Dangers
+            htmlContent += `<h2>第四階段：探險危害</h2>`;
+            const selectedDangers = document.querySelectorAll('input[name="danger"]:checked');
+            if (selectedDangers.length > 0) {
+                htmlContent += `<ul>`;
+                let otherDangerDetailsAdded = false;
+                selectedDangers.forEach(dangerCheckbox => {
+                     htmlContent += `<li>${dangerCheckbox.value}</li>`;
+                     if (dangerCheckbox.value === '更多') {
+                        const otherDangerInputs = document.querySelectorAll('#other-dangers-details input');
+                        otherDangerInputs.forEach((input, index) => {
+                             if(input.value.trim() !== ''){
+                                 htmlContent += `<li style="margin-left: 20px;">其他 ${index + 1}：${input.value}</li>`;
+                                 otherDangerDetailsAdded = true;
+                             }
+                        });
+                     }
+                });
+                htmlContent += `</ul>`;
+                 const otherDangerCheckbox = document.getElementById('danger-更多'); // Check the element exists
+                 if (otherDangerCheckbox && otherDangerCheckbox.checked && !otherDangerDetailsAdded) {
+                     htmlContent += `<p>已勾選「更多」，但未填寫說明。</p>`;
+                 }
+            } else {
+                htmlContent += `<p>未選擇任何危害</p>`;
+            }
+
+            // Stage 5: Benefits
+            htmlContent += `<h2>第五階段：生態好處</h2>`;
+            const selectedBenefits = document.querySelectorAll('input[name="benefit"]:checked');
+             if (selectedBenefits.length > 0) {
+                htmlContent += `<ul>`;
+                let otherBenefitDetailsAdded = false;
+                selectedBenefits.forEach(benefitCheckbox => {
+                     htmlContent += `<li>${benefitCheckbox.value}</li>`;
+                     if (benefitCheckbox.value === '其他') { // Check against the value '其他'
+                        const otherBenefitInputs = document.querySelectorAll('#other-benefits-details input');
+                        otherBenefitInputs.forEach((input, index) => {
+                             if(input.value.trim() !== ''){
+                                 htmlContent += `<li style="margin-left: 20px;">其他 ${index + 1}：${input.value}</li>`;
+                                 otherBenefitDetailsAdded = true;
+                             }
+                        });
+                     }
+                });
+                htmlContent += `</ul>`;
+                 // Check the actual checkbox element's checked state
+                 const otherBenefitCheckbox = document.getElementById('benefit-其他'); // Check element exists
+                 if (otherBenefitCheckbox && otherBenefitCheckbox.checked && !otherBenefitDetailsAdded) {
+                     htmlContent += `<p>已勾選「其他」，但未填寫說明。</p>`;
+                 }
+            } else {
+                htmlContent += `<p>未選擇任何生態好處</p>`;
+            }
+
+
+            // Stage 6: Discussion
+            htmlContent += `<h2>第六階段：討論交流</h2>`;
+            const habitatNeeded = document.getElementById('habitat-needed')?.value || '未填寫';
+            const habitatImprovement = document.getElementById('habitat-improvement')?.value || '未填寫';
+            htmlContent += `<p><span class="label">我們需要什麼樣的棲地？</span><br>${habitatNeeded.replace(/\n/g, '<br>')}</p>`;
+            htmlContent += `<p><span class="label">我們可以如何改善？</span><br>${habitatImprovement.replace(/\n/g, '<br>')}</p>`;
+
+            // Stage 7: Quiz Score
+            htmlContent += `<h2>第七階段：小測驗分數</h2>`;
+            // Ensure score is treated as a number, provide fallback
+             const finalScore = typeof score === 'number' ? Math.round(score) : '尚未計算';
+            htmlContent += `<p><span class="label">最終分數：</span> ${finalScore}</p>`;
+
+
+            htmlContent += `</body></html>`;
+
+            // Create blob and download link
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "生態活動結果.html";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+             // Clean up the object URL
+             URL.revokeObjectURL(link.href);
+        }
+
+        const exportButton = document.getElementById('export-button');
+        if (exportButton) {
+            exportButton.addEventListener('click', exportResults);
+        }
+        // --- END EXPORT LOGIC ---
+
+
+        // --- MAIN ECOLOGY GAME LOGIC ---
+        const gameData={
+            animals:[{id:"leopard-cat-1",name:"石虎",icon:"🐆",position:{top:"35%",left:"15%"},habitat:"forest",released:!1},{id:"ferret-badger-1",name:"鼬獾",icon:"🦡",position:{top:"42%",left:"22%"},habitat:"forest",released:!1},{id:"snake-1",name:"蛇類",icon:"🐍",position:{top:"40%",left:"5%"},habitat:"forest",released:!1},{id:"tortoise-1",name:"陸龜",icon:"🐢",position:{top:"50%",left:"12%"},habitat:"forest",released:!1},{id:"frog-1",name:"諸羅樹蛙",icon:"🐸",position:{top:"56%",left:"8%"},habitat:"forest",released:!1},{id:"bird-1",name:"竹雞",icon:"🐔",position:{top:"20%",left:"10%"},habitat:"forest",released:!1},{id:"butterfly-3",name:"蝴蝶",icon:"🦋",position:{top:"25%",left:"20%"},habitat:"forest",released:!1},{id:"frog-2",name:"澤蛙",icon:"🐸",position:{top:"85%",left:"65%"},habitat:"water_edge",released:!1},{id:"bird-2",name:"白鷺",icon:"🦢",position:{top:"78%",left:"90%"},habitat:"water_edge",released:!1},{id:"fish-1",name:"魚類",icon:"🐟",position:{top:"65%",left:"82%"},habitat:"water_edge",released:!1},{id:"dragonfly-1",name:"蜻蜓",icon:"🦗",position:{top:"70%",left:"78%"},habitat:"water_edge",released:!1},{id:"aquatic-insect-1",name:"水生昆蟲",icon:"🦟",position:{top:"80%",left:"75%"},habitat:"water_edge",released:!1},{id:"firefly-2",name:"螢火蟲",icon:"💡",position:{top:"78%",left:"8%"},habitat:"water_edge",released:!1},{id:"frog-3",name:"澤蛙",icon:"🐸",position:{top:"95%",left:"35%"},habitat:"wetland",released:!1},{id:"tortoise-2",name:"烏龜",icon:"🐢",position:{top:"95%",left:"50%"},habitat:"wetland",released:!1},{id:"firefly-1",name:"螢火蟲",icon:"💡",position:{top:"82%",left:"42%"},habitat:"wetland",released:!1},{id:"dragonfly-2",name:"蜻蜓",icon:"🦗",position:{top:"83%",left:"48%"},habitat:"wetland",released:!1},{id:"aquatic-insect-2",name:"水黽",icon:"🦟",position:{top:"93%",left:"52%"},habitat:"wetland",released:!1},{id:"butterfly-2",name:"蝴蝶",icon:"🦋",position:{top:"82%",left:"33%"},habitat:"wetland",released:!1},{id:"frog-4",name:"青蛙",icon:"🐸",position:{top:"68%",left:"30%"},habitat:"farm_corridor",released:!1},{id:"bee-2",name:"蜜蜂",icon:"🐝",position:{top:"65%",left:"55%"},habitat:"farm_corridor",released:!1},{id:"butterfly-1",name:"蝴蝶",icon:"🦋",position:{top:"62%",left:"30%"},habitat:"farm_corridor",released:!1},{id:"bird-4",name:"竹雞",icon:"🐔",position:{top:"78%",left:"30%"},habitat:"farm_corridor",released:!1},{id:"ferret-badger-2",name:"鼬獾",icon:"🦡",position:{top:"62%",left:"25%"},habitat:"farm_corridor",released:!1},{id:"snake-3",name:"蛇類",icon:"🐍",position:{top:"56%",left:"56%"},habitat:"farm_corridor",released:!1},{id:"bee-1",name:"蜜蜂",icon:"🐝",position:{top:"48%",left:"53%"},habitat:"farm_building",released:!1},{id:"bird-5",name:"麻雀",icon:"🦜",position:{top:"40%",left:"54%"},habitat:"farm_building",released:!1},{id:"ferret-badger-3",name:"鼬獾",icon:"🦡",position:{top:"48%",left:"62%"},habitat:"farm_building",released:!1}],
+            disturbances:[{id:"disturbance-dog",name:"流浪狗",icon:"🐕",position:{top:"31%",left:"92%"}},{id:"disturbance-pesticide",name:"農藥漂移",icon:"☠️",position:{top:"60%",left:"60%"}},{id:"disturbance-machine",name:"農機",icon:"🚜",position:{top:"78%",left:"55%"}},{id:"disturbance-trash",name:"垃圾堆積",icon:"🗑️",position:{top:"40%",left:"85%"}},{id:"disturbance-ditch",name:"水泥排水溝",icon:"🧱",position:{top:"75%",left:"2%"}},{id:"disturbance-light",name:"過度照明",icon:"💡",position:{top:"25%",left:"45%"}},{id:"disturbance-roadkill",name:"道路路殺",icon:"🚗",position:{top:"32%",left:"45%"}},{id:"disturbance-fertilizer",name:"化肥使用",icon:"🧪",position:{top:"50%",left:"15%"}}],
+            facilities:[{id:"f11",name:"森林緩衝帶",icon:"🌳",zone:"dz11",placed:!1,benefits:["forest"],reason:"作為森林與農田之間的過渡區，能減緩農耕活動對森林的干擾，並提供石虎、鼬獾等較敏感的哺乳動物一個安全的覓食與移動前緣。",howto:"<strong>【寬度】</strong>在森林邊緣保留至少 5–10 公尺寬的區域。<br><strong>【植被】</strong>營造草本、灌木、小喬木等多層次的植被結構，模仿自然森林樣貌。"},
+            {id:"f1",name:"田埂草帶/廊道",icon:"🌿",zone:"dz1",placed:!1,benefits:["farm_corridor"],reason:"提供授粉昆蟲(蝴蝶、蜜蜂)、天敵(蜘蛛、瓢蟲)及小型動物(青蛙、蛇)一個重要的庇護、覓食與移動的通道，串聯破碎的棲地。",howto:"<strong>【寬度】</strong>在田埂或田邊保留 1–3 公尺寬的未耕作區。<br><strong>【植被】</strong>讓原生草類自然生長，或種植馬利筋、萬壽菊等蜜源植物。<br><strong>【管理】</strong>禁止使用除草劑，可定期人工修剪以防過度蔓延。",sroiFarms:"湧健酪梨農場、雨社山下農場、指令教育農場、阿爾喜檸檬"},
+            {id:"f3",name:"生物友善涵洞",icon:"🐾",zone:"dz3",placed:!1,benefits:["forest"],reason:"讓習慣在地面活動的動物（如鼬獾、食蛇龜、青蛙）可以安全穿越田間道路，避免被農機或車輛輾斃(路殺)。",howto:"<strong>【地點】</strong>設置在田間道路、田埂下方。<br><strong>【設計】</strong>內徑約 30-50 公分，內部需保持昏暗、濕潤，洞口兩側應有植被引導。",sroiFarms:"湧健酪梨農場、雨社山下農場"},
+            {id:"f5",name:"綠化灌溉水道",icon:"💧",zone:"dz5",placed:!1,benefits:["water_edge"],reason:"水泥灌溉水道一般由三面光滑的水泥建造，生物不易躲藏；創造一個石砌且綠化的緩衝帶可保水、保濕、降溫的微棲地，成為蝌蚪、蛇類、水生昆蟲的避難所與移動通道。",howto:"<strong>【結構】</strong>將溝渠改為自然土坡或鋪設卵石底，減少水泥化。<br><strong>【設計】</strong>兩側種植野薑花、香蒲等挺水植物，並在周邊放置不影響水體流動的石塊或枯木供動物躲藏。"},{id:"f6",name:"小濕地",icon:"🐸",zone:"dz6",placed:!1,benefits:["wetland"],reason:"在農田中創造一個生物多樣性熱點，是蛙類、蜻蜓、水鳥等動物繁殖、覓食、棲息的核心場所，也是絕佳的生態教育點。",howto:"<strong>【地點】</strong>利用田區角落的低窪處或休耕田。<br><strong>【設計】</strong>面積約 1.5–4 公尺，水深 0.5-1 公尺，邊坡緩降，底部可用黏土防漏。種植水燭、野慈姑等水生植物。"},{id:"f8",name:"水岸緩衝帶",icon:"🌊",zone:"dz8",placed:!1,benefits:["water_edge"],reason:"保護溪流、水塘的水質，能有效攔截、過濾從農田流出的農藥與肥料，同時提供豐富的濕地生態系讓多樣生物棲息。",howto:"<strong>【寬度】</strong>在水岸與農田間保留 5–15 公尺寬。<br><strong>【植被】</strong>由水邊至陸地，依序種植水生植物、草本層、灌木層，形成多層次保護。"},{id:"f9",name:"自然化護岸",icon:"⛰️",zone:"dz9",placed:!1,benefits:["water_edge"],reason:"將垂直陡峭的水泥堤岸，改造為動物可自由進出的緩坡。增加水陸交界的棲地多樣性，讓龜、蛙能輕易上下岸。",howto:"<strong>【方式】</strong>移除部分水泥塊，回填土壤，或使用柳條編織的石籠、植生袋等柔性材料打造緩坡。<br><strong>【設計】</strong>坡上可種植原生草本或灌木，穩定坡面。"},{id:"f10",name:"漂浮棲地",icon:"🏝️",zone:"dz10",placed:!1,benefits:["wetland"],reason:"在水域中提供一個穩定的平台，讓蜻蜓、豆娘等昆蟲可以停棲、產卵，也讓小青蛙有躲避水中天敵的休息站。",howto:"<strong>【材料】</strong>使用竹子、無毒塑膠管等製成框架，中間鋪設網或種植布。<br><strong>【植被】</strong>種植空心菜、水芙蓉等水生植物，根系可提供水中生物庇護。"},{id:"f12",name:"枯木堆、草堆",icon:"🪵",zone:"dz12",placed:!1,benefits:["forest","wetland"],reason:"提供一個穩定、溫濕度變化小的微環境，是蛇、蜥蜴、龜、蛙等變溫動物絕佳的躲藏、覓食或度冬的場所。",howto:"<strong>【地點】</strong>在森林邊緣、草帶或田區角落等不易受干擾處。<br><strong>【材料】</strong>將修剪下來的樹枝、枯木、落葉、稻草堆疊即可，不需過度整齊。",sroiFarms:"湧健酪梨農場"},{id:"f13",name:"昆蟲旅館",icon:"🦋",zone:"dz13",placed:!1,benefits:["farm_building"],reason:"為獨居蜂(如切葉蜂)等授粉昆蟲，以及瓢蟲、草蛉等天敵昆蟲，提供繁殖與過冬的住所，有助於作物授粉與生物防治。",howto:"<strong>【材料】</strong>使用木箱、竹筒、鑽孔木塊、稻草、松果等天然材料堆疊而成。<br><strong>【地點】</strong>設置在草帶、果園旁，離地約 30-100 公分。"},{id:"f14",name:"1959動保專線",icon:"📞",zone:"dz_dog",placed:!1,removes:["disturbance-dog","disturbance-roadkill"],reason:"通報流浪犬隻能幫助相關單位進行適當的安置，減少牠們對野生動物（如石虎、穿山甲）的追逐與攻擊，保護淺山生態系的安全。路殺對於生態亦是干擾，不論是生物或是駕駛人都存在風險，若發現有動物路殺情況，可以通報動保專線，相關單位會依實際情況，設立警示牌提醒用路人小心行駛，確保生物及自身的安全。",howto:"撥打1959動保專線，清楚說明流浪犬的位置、數量、特徵，讓專業人員能有效處理。"}
+            ],
+            dropZones:[{id:"dz1",position:{top:"71%",left:"5%",width:"28%",height:"4%"},cx:19,cy:73},{id:"dz3",position:{top:"32%",left:"72%",width:"5%",height:"6%"},cx:74.5,cy:35},{id:"dz5",position:{top:"70%",left:"2%",width:"3%",height:"25%"},cx:3.5,cy:82.5},{id:"dz6",position:{top:"85%",left:"25%",width:"22%",height:"10%"},cx:36,cy:90},{id:"dz8",position:{top:"40%",left:"68%",width:"8%",height:"38%"},cx:72,cy:59},{id:"dz9",position:{top:"50%",left:"93%",width:"5%",height:"30%"},cx:95.5,cy:65},{id:"dz10",position:{top:"82%",left:"78%",width:"15%",height:"10%"},cx:85.5,cy:87},{id:"dz11",position:{top:"38%",left:"30%",width:"22%",height:"8%"},cx:41,cy:42},{id:"dz12",position:{top:"45%",left:"0%",width:"10%",height:"10%"},cx:5,cy:50},{id:"dz13",position:{top:"68%",left:"42%",width:"10%",height:"10%"},cx:47,cy:73},{id:"dz_dog",position:{top:"31%",left:"90%",width:"8%",height:"6%"},cx:94,cy:34},],
+            habitatAnchors:{forest:{cx:20,cy:30,name:"森林"},water_edge:{cx:80,cy:50,name:"水域邊緣"},wetland:{cx:88,cy:88,name:"濕地"},farm_building:{cx:60,cy:40,name:"設施周邊"},farm_corridor:{cx:30,cy:65,name:"田間廊道"}}
+        };
+        
+        const scene=document.getElementById("scene"),facilitiesList=document.getElementById("facilities-list"),feedbackModal=document.getElementById("feedback-modal"),modalTitle=document.getElementById("modal-title"),modalContent=document.getElementById("modal-content"),modalCloseBtn=document.getElementById("modal-close-btn"),sroiModal=document.getElementById("sroi-modal"),sroiModalCloseBtn=document.getElementById("sroi-modal-close-btn"),connectionCounterEl=document.getElementById("connection-counter"),canvas=document.getElementById("connection-canvas"),ctx=canvas?.getContext("2d"),animalPen=document.getElementById("animal-pen"),magicWandCursor=document.getElementById("magic-wand-cursor"); // Added safe navigation for getContext
+        let sceneRect,selectedFacility=null,connectedHabitats=new Set,sroiModalShown=!1,placedFacilitiesCount=0, score=0, scoreDisplay; // Initialize score to 0
+        
+        function init(){
+            scoreDisplay = document.getElementById("score-display");
+            score = 0; // Ensure score is reset/initialized
+            updateScoreDisplay();
+            setTimeout(resizeCanvas, 0);
+            window.addEventListener("resize", resizeCanvas);
+            
+            // Check if gameData.animals exists and is an array
+            if (gameData && Array.isArray(gameData.animals)) {
+                 const uniqueAnimals = [...new Map(gameData.animals.map(e => [e.name, e])).values()];
+                 if (animalPen) { // Check if animalPen exists
+                    animalPen.innerHTML = ''; // Clear previous animals if any
+                    uniqueAnimals.forEach(e => {
+                        if(e && e.name && e.icon) { // Add checks for animal data
+                            const t = document.createElement("div");
+                            t.id = `pen-${e.name}`;
+                            t.className = "pen-animal";
+                            t.textContent = e.icon;
+                            animalPen.appendChild(t);
+                        }
+                    });
+                 }
+            }
+            
+            renderElements(gameData.animals, createAnimalElement);
+            renderElements(gameData.disturbances, createDisturbanceElement);
+            renderElements(gameData.facilities, createFacilityElement);
+            renderElements(gameData.dropZones, createDropZoneElement);
+            
+            // Add null checks for modal buttons
+            if (modalCloseBtn) modalCloseBtn.addEventListener("click", hideFeedbackModal);
+            if (sroiModalCloseBtn) sroiModalCloseBtn.addEventListener("click", hideSroiModal);
+            if (feedbackModal) {
+                 feedbackModal.addEventListener("click", e => {
+                    if (e.target === feedbackModal) hideFeedbackModal();
+                 });
+            }
+             if (sroiModal) {
+                sroiModal.addEventListener("click", e => {
+                    if (e.target === sroiModal) hideSroiModal();
+                });
+             }
+            document.addEventListener("mousemove", moveMagicWand);
+            document.addEventListener("touchmove", moveMagicWand, { passive: false });
+        }
+
+        function resizeCanvas() {
+            if (!scene || !canvas) return; // Add checks
+            sceneRect = scene.getBoundingClientRect();
+            canvas.width = sceneRect.width;
+            canvas.height = sceneRect.height;
+             if (!ctx) return; 
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Check if gameData exists and facilities is an array
+            if (gameData && Array.isArray(gameData.facilities)) {
+                gameData.facilities.forEach(e => {
+                    if (e.placed) {
+                        // Check dropZones exists and is an array
+                        const t = Array.isArray(gameData.dropZones) ? gameData.dropZones.find(t => t.id === e.zone) : undefined;
+                        // Check benefits exists and is an array
+                        if (Array.isArray(e.benefits)) {
+                            e.benefits.forEach(benefitKey => { // Use benefitKey
+                                // Check habitatAnchors exists and has the key
+                                const o = gameData.habitatAnchors && gameData.habitatAnchors[benefitKey];
+                                if (t && o) drawConnectionLine(t, o);
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderElements(dataArray, createElementFunc) { // Use descriptive names
+             if (!dataArray || typeof dataArray[Symbol.iterator] !== 'function') {
+                // console.error("Invalid data provided to renderElements:", dataArray); // Optional: Keep for debugging
+                return; 
+            }
+            dataArray.forEach(item => { 
+                const element = createElementFunc(item); // Use descriptive name
+                if (element && element.classList.contains("facility")) {
+                    if (facilitiesList) facilitiesList.appendChild(element);
+                } else if (element) {
+                   if (scene) scene.appendChild(element);
+                }
+            });
+        }
+
+        function createIconElement(itemData, isDisturbance = false) { // Use descriptive names
+            const element = document.createElement("div"); // Use descriptive name
+            if (!itemData || typeof itemData !== 'object' || !itemData.id || !itemData.name || !itemData.icon || !itemData.position) {
+                // console.error("Invalid data for createIconElement:", itemData); // Optional: Keep for debugging
+                return null; 
+            }
+            element.id = itemData.id;
+            element.className = "game-icon";
+            if (isDisturbance) {
+                element.classList.add("disturbance-icon");
+                element.innerHTML = `<div class="icon-symbol">❗️</div><span>${itemData.name}</span>`;
+            } else {
+                element.classList.add("animal");
+                 if (itemData.habitat) element.dataset.habitat = itemData.habitat; 
+                element.innerHTML = `<div class="text-xl">${itemData.icon}</div><span>${itemData.name}</span>`;
+            }
+             // Add checks for position values
+             if (itemData.position.top) element.style.top = itemData.position.top;
+             if (itemData.position.left) element.style.left = itemData.position.left;
+            return element;
+        }
+        
+        function createAnimalElement(animalData) { // Use descriptive name
+            const animalElement = createIconElement(animalData, false); // Use descriptive name
+             if (!animalElement) return null; 
+            animalElement.style.opacity = "0";
+            animalElement.style.transform = "scale(0)";
+            animalElement.style.top = "5%"; 
+            animalElement.style.left = "95%";
+            return animalElement;
+        }
+
+        function createDisturbanceElement(disturbanceData) { // Use descriptive name
+            return createIconElement(disturbanceData, true);
+        }
+
+        function createFacilityElement(facilityData) { // Use descriptive name
+            if (!facilityData || !facilityData.id || !facilityData.zone || !facilityData.icon || !facilityData.name) return null; 
+            const facilityElement = document.createElement("div"); // Use descriptive name
+            facilityElement.id = facilityData.id;
+            facilityElement.dataset.zone = facilityData.zone;
+            facilityElement.className = "facility bg-lime-100 p-2 rounded-lg border border-lime-300 flex items-center gap-2";
+            facilityElement.addEventListener("click", handleFacilityClick);
+            facilityElement.innerHTML = `<span class="text-lg">${facilityData.icon}</span><span class="text-xs">${facilityData.name}</span>`;
+            return facilityElement;
+        }
+
+        function createDropZoneElement(dropZoneData) { // Use descriptive name
+             if (!dropZoneData || !dropZoneData.id || !dropZoneData.position) return null; 
+            const dropZoneElement = document.createElement("div"); // Use descriptive name
+            dropZoneElement.id = dropZoneData.id;
+            dropZoneElement.className = "drop-zone";
+            if (dropZoneData.position.top) dropZoneElement.style.top = dropZoneData.position.top;
+            if (dropZoneData.position.left) dropZoneElement.style.left = dropZoneData.position.left;
+            if (dropZoneData.position.width) dropZoneElement.style.width = dropZoneData.position.width;
+            if (dropZoneData.position.height) dropZoneElement.style.height = dropZoneData.position.height;
+            
+            dropZoneElement.addEventListener("click", handleDropZoneClick);
+            dropZoneElement.addEventListener("dragover", (evt) => { 
+                evt.preventDefault();
+                dropZoneElement.classList.add("hovered");
+            });
+            dropZoneElement.addEventListener("dragleave", () => {
+                dropZoneElement.classList.remove("hovered");
+            });
+            dropZoneElement.addEventListener("drop", (evt) => { 
+                evt.preventDefault();
+                dropZoneElement.classList.remove("hovered");
+                if(selectedFacility) handleDropZoneClick({ currentTarget: dropZoneElement }); 
+            });
+            return dropZoneElement;
+        }
+
+        function moveMagicWand(e) {
+            if (selectedFacility && magicWandCursor) { 
+                const t = e.touches ? e.touches[0] : e;
+                magicWandCursor.style.left = `${t.clientX}px`;
+                magicWandCursor.style.top = `${t.clientY}px`;
+            }
+        }
+
+        function handleFacilityClick(e) {
+            const clickedElement = e.currentTarget; // Use descriptive name
+            if (!clickedElement) return; 
+            if (clickedElement.classList.contains("placed")) return;
+            
+            if (selectedFacility && selectedFacility.id === clickedElement.id) {
+                clickedElement.classList.remove("selected");
+                selectedFacility = null;
+                 if (magicWandCursor) { 
+                    magicWandCursor.style.opacity = "0";
+                    setTimeout(() => magicWandCursor.style.display = "none", 200);
+                 }
+                return;
+            }
+            
+            const currentlySelected = document.querySelector(".facility.selected"); // Use descriptive name
+            if (currentlySelected) currentlySelected.classList.remove("selected");
+            
+            clickedElement.classList.add("selected");
+            // Check facilities exists and is an array before find
+            selectedFacility = Array.isArray(gameData?.facilities) ? gameData.facilities.find(fac => fac.id === clickedElement.id) : null; 
+            
+            if (magicWandCursor) { 
+                 magicWandCursor.style.display = "block";
+                 setTimeout(() => magicWandCursor.style.opacity = "1", 10);
+            }
+        }
+
+        function updateScoreDisplay() {
+            if (scoreDisplay) {
+                 // Ensure score is a number before rounding
+                scoreDisplay.textContent = `分數: ${typeof score === 'number' ? Math.round(score) : 'N/A'}`;
+            }
+        }
+
+        function handleDropZoneClick(e) {
+            if (!selectedFacility) return;
+            const clickedDropZone = e.currentTarget; // Use descriptive name
+            if (!clickedDropZone || clickedDropZone.classList.contains("occupied")) return; 
+            
+            const facilityData = selectedFacility; // Use descriptive name
+             if (!facilityData) return; // Add check for facilityData
+            const facilityElement = document.getElementById(facilityData.id); // Use descriptive name
+            
+            if (facilityData.zone === clickedDropZone.id) {
+                 const facilitiesCount = Array.isArray(gameData?.facilities) ? gameData.facilities.length : 0; // Get count safely
+                const pointsPerCorrect = facilitiesCount > 0 ? 100 / facilitiesCount : 0;
+                score = (score || 0) + pointsPerCorrect; // Ensure score is a number
+                placeFacility(facilityElement, clickedDropZone, facilityData);
+            } else {
+                 score = (score || 0) - 1; // Ensure score is a number
+                showFeedbackModal(false);
+            }
+            updateScoreDisplay();
+            
+            if (facilityElement) facilityElement.classList.remove("selected");
+            selectedFacility = null;
+             if (magicWandCursor) { 
+                 magicWandCursor.style.opacity = "0";
+                 setTimeout(() => magicWandCursor.style.display = "none", 200);
+             }
+        }
+
+        function releaseAnimals(habitats) { 
+             if (!gameData.animals || !Array.isArray(habitats)) return; // Check arrays
+            gameData.animals.forEach(animalData => { // Use descriptive name
+                 // Add check for animalData
+                if (animalData && habitats.includes(animalData.habitat) && !animalData.released) {
+                    animalData.released = true;
+                    const animalElement = document.getElementById(animalData.id); // Use descriptive name
+                    const penElement = document.getElementById(`pen-${animalData.name}`); // Use descriptive name
+                    if (animalElement) {
+                        animalElement.style.top = animalData.position?.top || '0%'; 
+                        animalElement.style.left = animalData.position?.left || '0%'; 
+                        animalElement.style.opacity = "1";
+                        animalElement.style.transform = "scale(1)";
+                    }
+                    if (penElement) {
+                        penElement.style.opacity = "0.2"; 
+                    }
+                }
+            });
+            activateAnimals(habitats); 
+        }
+
+        function placeFacility(facilityElement, dropZoneElement, facilityData) { 
+             if (!facilityData) return; 
+            facilityData.placed = true;
+            placedFacilitiesCount++;
+            if (facilityElement) {
+                facilityElement.classList.add("placed");
+                facilityElement.removeEventListener("click", handleFacilityClick);
+            }
+             if (dropZoneElement) { 
+                dropZoneElement.innerHTML = `<div class="w-full h-full flex items-center justify-center text-green-800 font-bold bg-green-200/80 p-1 text-xs text-center">${facilityData.name || ''}</div>`; 
+                dropZoneElement.classList.add("occupied");
+             }
+            showFeedbackModal(true, facilityData);
+            updateDisturbanceIcons();
+
+            if (facilityData.removes) {
+                const removals = Array.isArray(facilityData.removes) ? facilityData.removes : [facilityData.removes]; 
+                removals.forEach(id => { 
+                    const elementToRemove = document.getElementById(id); 
+                    if (elementToRemove) {
+                        elementToRemove.style.transition = "opacity 0.5s, transform 0.5s";
+                        elementToRemove.style.opacity = "0";
+                        elementToRemove.style.transform = "scale(0)";
+                        setTimeout(() => elementToRemove.remove(), 500);
+                    }
+                });
+            }
+
+            if (facilityData.benefits) {
+                releaseAnimals(facilityData.benefits);
+                const dropZoneId = dropZoneElement?.id; // Get ID safely
+                const dropZoneData = Array.isArray(gameData?.dropZones) ? gameData.dropZones.find(dz => dz.id === dropZoneId) : null; 
+                
+                if (Array.isArray(facilityData.benefits)) { // Check benefits is array
+                    facilityData.benefits.forEach(benefitHabitat => { 
+                        const anchorData = gameData.habitatAnchors?.[benefitHabitat]; 
+                        if (dropZoneData && anchorData) {
+                            drawConnectionLine(dropZoneData, anchorData);
+                             if (anchorData.name) connectedHabitats.add(anchorData.name); 
+                        }
+                    });
+                }
+            }
+             if (connectionCounterEl) updateConnectionCounter(); 
+            checkCompletion();
+        }
+
+        function updateConnectionCounter() {
+            if (!connectionCounterEl) return; 
+            const count = connectedHabitats.size; 
+            connectionCounterEl.textContent = `已連接 ${count} 個生態棲地：${[...connectedHabitats].join("、")}`;
+            if (count > 0) {
+                connectionCounterEl.classList.remove("bg-green-100", "text-green-700");
+                connectionCounterEl.classList.add("bg-yellow-200", "text-yellow-800");
+            } else { 
+                 connectionCounterEl.classList.add("bg-green-100", "text-green-700");
+                 connectionCounterEl.classList.remove("bg-yellow-200", "text-yellow-800");
+            }
+        }
+
+        function updateDisturbanceIcons() {
+            const disturbanceIcons = document.querySelectorAll(".disturbance-icon"); 
+            const facilitiesCount = Array.isArray(gameData?.facilities) ? gameData.facilities.length : 0; // Get count safely
+            const scaleFactor = facilitiesCount > 0 ? Math.max(0.1, 1 - (placedFacilitiesCount / facilitiesCount)) : 1; 
+            disturbanceIcons.forEach(icon => {
+                icon.style.transform = `scale(${scaleFactor})`;
+            });
+        }
+
+        function checkCompletion() {
+            if (Array.isArray(gameData?.facilities) && gameData.facilities.every(fac => fac.placed) && !sroiModalShown) {
+                sroiModalShown = true;
+                setTimeout(showSroiModal, 1200);
+            }
+        }
+
+        function showFeedbackModal(isCorrect, facilityData) { 
+            if (!feedbackModal) return; 
+            const modalInnerDiv = feedbackModal.querySelector("div > div"); 
+            if (modalInnerDiv) {
+                if (isCorrect && facilityData) { 
+                    if (modalTitle) modalTitle.textContent = `做得好！這是「${facilityData.name || ''}」`; 
+                    let sroiHtml = ""; 
+                    if (facilityData.sroiFarms) {
+                        sroiHtml = `
+                    <div class="mt-4 p-3 border-2 border-green-600 bg-green-50 rounded-lg">
+                        <p class="font-bold text-green-800">⭐ 已完成本項設施並計算SROI之農場：</p>
+                        <p class="text-gray-700">${facilityData.sroiFarms}</p>
+                    </div>
+                    `;
+                    }
+                    if (modalContent) { 
+                         modalContent.innerHTML = `
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="text-lg font-semibold text-green-800 border-l-4 border-green-500 pl-2 mb-1">🌿 生態功能</h4>
+                                <p class="text-gray-700 leading-relaxed">${facilityData.reason || ''}</p> 
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-green-800 border-l-4 border-green-500 pl-2 mb-1">🛠️ 如何建造</h4>
+                                <div class="text-gray-700 leading-relaxed">${facilityData.howto || ''}</div>
+                            </div>
+                             <div class="mt-4 p-3 border-2 border-blue-400 bg-blue-50 rounded-lg">
+                                <p class="text-blue-800">因為您設置了生態保護措施，注意農村畫布中的驚嘆號會逐漸縮小；這些干擾生態的農業生產行為並不是消失了，而是因為友善生態，讓原有的干擾對生態的影響降得更低了!這樣良善的循環中，農友漸漸受益於生態，化學資材的使用也會逐漸降低!</p>
+                            </div>
+                            ${sroiHtml}
+                        </div>
+                        `;
+                    }
+                } else {
+                     if (modalTitle) modalTitle.textContent = "噢喔，再試一次！";
+                     if (modalContent) modalContent.innerHTML = "<p>這個位置好像不太對喔，想想看這個設施最能幫助到哪些生物，以及它應該放在哪裡才能發揮最大作用呢？</p>";
+                }
+                feedbackModal.classList.remove("hidden");
+                setTimeout(() => {
+                    modalInnerDiv.classList.remove("scale-95", "opacity-0");
+                }, 10);
+            }
+        }
+
+        function hideFeedbackModal() {
+             if (!feedbackModal) return; 
+            const modalInnerDiv = feedbackModal.querySelector("div > div"); 
+            if (modalInnerDiv) {
+                modalInnerDiv.classList.add("scale-95", "opacity-0");
+                setTimeout(() => {
+                    feedbackModal.classList.add("hidden");
+                }, 300);
+            }
+        }
+        
+        function showSroiModal() {
+             if (!sroiModal) return; 
+            const modalInnerDiv = sroiModal.querySelector("div > div"); 
+            if (modalInnerDiv) {
+                sroiModal.classList.remove("hidden");
+                setTimeout(() => {
+                    modalInnerDiv.classList.remove("scale-95", "opacity-0");
+                }, 10);
+            }
+        }
+
+        function hideSroiModal() {
+             if (!sroiModal) return; 
+            const modalInnerDiv = sroiModal.querySelector("div > div"); 
+            if (modalInnerDiv) {
+                modalInnerDiv.classList.add("scale-95", "opacity-0");
+                setTimeout(() => {
+                    sroiModal.classList.add("hidden");
+                }, 300);
+            }
+        }
+
+        function activateAnimals(habitats) { 
+             if (!Array.isArray(habitats)) return; // Check habitats is array
+            document.querySelectorAll(".animal").forEach(animalElement => { 
+                if (animalElement.dataset?.habitat && habitats.includes(animalElement.dataset.habitat) && animalElement.style.opacity === "1") { 
+                    animalElement.classList.add("active");
+                    animalElement.style.setProperty("--x1", `${20 * (Math.random() - .5)}px`);
+                    animalElement.style.setProperty("--y1", `${20 * (Math.random() - .5)}px`);
+                    animalElement.style.setProperty("--x2", `${20 * (Math.random() - .5)}px`);
+                    animalElement.style.setProperty("--y2", `${20 * (Math.random() - .5)}px`);
+                    animalElement.style.setProperty("--x3", `${20 * (Math.random() - .5)}px`);
+                    animalElement.style.setProperty("--y3", `${20 * (Math.random() - .5)}px`);
+                }
+            });
+        }
+
+        function drawConnectionLine(dropZoneData, anchorData) { 
+            if (!canvas || !ctx || !dropZoneData || !anchorData) return; 
+            const startX = ((dropZoneData.cx || 0) / 100) * canvas.width; 
+            const startY = ((dropZoneData.cy || 0) / 100) * canvas.height;
+            const endX = ((anchorData.cx || 0) / 100) * canvas.width;
+            const endY = ((anchorData.cy || 0) / 100) * canvas.height;
+            
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = "rgba(255, 255, 0, 0.8)";
+            ctx.lineWidth = 4;
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]); 
+        }
+        
+        // --- Add checks for essential elements before calling init ---
+        if (document.getElementById('scene') && 
+            document.getElementById('facilities-list') &&
+            document.getElementById('feedback-modal') &&
+            document.getElementById('sroi-modal') &&
+            document.getElementById('connection-counter') &&
+            document.getElementById('connection-canvas') &&
+            document.getElementById('animal-pen') &&
+            document.getElementById('magic-wand-cursor') &&
+            document.getElementById('score-display')) 
+        {
+             init(); // Call the main init function only if elements exist
+        } else {
+            console.error("One or more essential game elements are missing from the DOM.");
+        }
+        
+    }); 
+    </script>
+</body>
+</html>
+
