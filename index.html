@@ -87,7 +87,7 @@
             border-color: #cbd5e1; /* gray-300 for discussion text area border */
         }
          /* Style for Export Button */
-        .export-button {
+        .action-button { /* Renamed export-button for general use */
             display: inline-block;
             background-color: #22c55e; /* green-500 */
             color: white;
@@ -99,9 +99,17 @@
             transition: background-color 0.2s;
             border: none;
             font-size: 1.1rem;
+            text-decoration: none; /* For link button */
         }
-        .export-button:hover {
+        .action-button:hover {
             background-color: #16a34a; /* green-600 */
+        }
+         /* Specific style for link button */
+        .link-button {
+             background-color: #3b82f6; /* blue-500 */
+        }
+        .link-button:hover {
+             background-color: #2563eb; /* blue-600 */
         }
         /* --- END PARTNER REGISTRATION STYLES --- */
 
@@ -205,6 +213,20 @@
              border-color: #bfdbfe; 
         }
         /* --- END BENEFIT STYLES --- */
+
+        /* --- CERTIFICATION STYLES --- */
+        #certification-code {
+             font-size: 1.5rem;
+             font-weight: bold;
+             color: #ca8a04; /* yellow-600 */
+             background-color: #fefce8; /* yellow-50 */
+             padding: 0.5rem 1rem;
+             border: 2px dashed #facc15; /* yellow-400 */
+             border-radius: 0.5rem;
+             display: inline-block; /* Fit content */
+             margin-top: 0.5rem;
+        }
+        /* --- END CERTIFICATION STYLES --- */
 
 
         body {
@@ -453,9 +475,20 @@
         <div id="export-section" class="my-8 p-4 bg-white rounded-lg shadow-inner text-center">
             <h2 class="text-2xl font-bold text-center text-green-800 mb-4">第八階段：匯出結果</h2>
             <p class="text-center text-gray-600 mb-6">點擊下方按鈕，將您在各階段填寫的內容與測驗分數匯出成HTML檔案。</p>
-            <button id="export-button" class="export-button">匯出結果</button>
+            <button id="export-button" class="action-button">匯出結果</button>
         </div>
         <!-- --- END EXPORT SECTION --- -->
+
+         <!-- --- NEW CERTIFICATION SECTION --- -->
+         <div id="certification-section" class="my-8 p-4 bg-white rounded-lg shadow-inner text-center">
+            <h2 class="text-2xl font-bold text-center text-green-800 mb-4">第九階段：永續點數認證</h2>
+            <p class="text-center text-gray-600 mb-4">恭喜您完成生態互動導覽！<br>根據您扮演的角色，您的永續點數認證碼是：</p>
+            <div id="certification-code-display" class="mb-6">
+                <span id="certification-code">---</span>
+            </div>
+             <a href="https://farmcmd.github.io/enterprise/" target="_blank" class="action-button link-button">前往企業永續專區</a>
+        </div>
+        <!-- --- END CERTIFICATION SECTION --- -->
 
 
         <footer class="text-center mt-6 text-xs text-gray-500">
@@ -470,14 +503,27 @@
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         
+         // --- MOVED Certification Span Declaration ---
+         const certificationCodeSpan = document.getElementById('certification-code');
+
         // --- CARD GAME LOGIC ---
         const cardGrid = document.getElementById('card-grid');
         const cardGameTitle = document.getElementById('card-game-title');
         const cardGamePrompt = document.getElementById('card-game-prompt');
-        const creatures = ['🐝', '🐢', '🐸', '🐆', '🦡', '🐞']; // 鼬獾 replaced 竹雞
+        // Mapping of creature emoji to certification code
+        const certificationCodes = {
+            '🐝': '112233', // 蜜蜂
+            '🐞': '337788', // 瓢蟲
+            '🦡': '556699', // 鼬獾
+            '🐆': '225599', // 石虎
+            '🐢': '115588', // 烏龜
+            '🐸': '663399'  // 青蛙
+        };
+        const creatures = Object.keys(certificationCodes); // Get creatures from the map
         let gameCards = [];
         let lockBoard = false; 
-        let selectedCreature = null; // Variable to store selected creature
+        let selectedCreature = null; 
+        let selectedCertificationCode = '---'; // Variable for certification code
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -513,17 +559,29 @@
             lockBoard = true; 
             this.classList.add('is-flipped');
             
-            selectedCreature = this.dataset.creature; // Store the selected creature
-            
+            selectedCreature = this.dataset.creature; 
+            selectedCertificationCode = certificationCodes[selectedCreature] || '---'; // Get code from map
+
             if (cardGamePrompt) {
                 cardGamePrompt.innerHTML = `你抽到的是 <strong class="text-xl">${selectedCreature}</strong>！<br>請去找到另一位抽到 <strong class="text-xl">${selectedCreature}</strong> 的夥伴！`;
             }
+             // Update the certification code display
+             updateCertificationCodeDisplay(); 
         }
+
+        // --- Moved updateCertificationCodeDisplay function BEFORE initCardGame ---
+        function updateCertificationCodeDisplay() {
+            if (certificationCodeSpan) {
+                certificationCodeSpan.textContent = selectedCertificationCode || '---';
+            }
+        }
+
 
         function initCardGame() {
             if (!cardGrid) return; 
             lockBoard = false; 
-            selectedCreature = null; // Reset selected creature
+            selectedCreature = null; 
+            selectedCertificationCode = '---'; // Reset code
             cardGrid.innerHTML = ''; 
             gameCards = shuffle([...creatures]); 
             gameCards.forEach(creature => {
@@ -531,11 +589,12 @@
                 cardGrid.appendChild(cardElement);
             });
             if (cardGameTitle) {
-                cardGameTitle.textContent = '里山社區生態互動導覽'; // Updated Title
+                cardGameTitle.textContent = '里山社區生態互動導覽'; 
             }
             if (cardGamePrompt) {
-                cardGamePrompt.textContent = '下列有6張生物卡片，請選擇一張卡片翻開'; // Updated Prompt
+                cardGamePrompt.textContent = '下列有6張生物卡片，請選擇一張卡片翻開'; 
             }
+             updateCertificationCodeDisplay(); // Update display on init/reset
         }
         
         initCardGame();
@@ -570,7 +629,7 @@
             if (!fieldTypeGrid) return;
 
             fieldTypeGrid.innerHTML = ''; 
-            const fieldTypes = [ // Added 校園 and 河堤
+            const fieldTypes = [ 
                 '郊外', '農田', '公園', '社區', 
                 '淺山步道', '校園', '河堤', '其他' 
             ];
@@ -685,11 +744,8 @@
                  const otherLabel = otherCheckbox.closest('.danger-option');
                  if(otherLabel){
                      otherLabel.addEventListener('click', (e)=>{
-                          // Only check the box if the click wasn't on the input itself
-                          // and the checkbox isn't already checked
                           if(e.target.tagName !== 'INPUT' && !otherCheckbox.checked){
                               otherCheckbox.checked = true;
-                              // Manually trigger the change event to update styles and show/hide fields
                               otherCheckbox.dispatchEvent(new Event('change'));
                          }
                      });
@@ -718,7 +774,6 @@
             ];
 
             benefits.forEach(benefit => {
-                 // Use a simpler, more reliable ID generation
                 const benefitId = `benefit-${benefit.replace(/[\s\W]+/g, '-')}`; 
                 const optionLabel = document.createElement('label');
                 optionLabel.className = 'benefit-option';
@@ -742,7 +797,6 @@
             }
 
             const checkBoxes = document.querySelectorAll('input[name="benefit"]');
-             // Use the generated ID to find the 'Other' checkbox
             const otherCheckbox = document.getElementById('benefit-其他'); 
 
             checkBoxes.forEach(checkbox => {
@@ -756,7 +810,6 @@
                         selectedLabel.classList.remove('selected');
                     }
 
-                    // Special check for 'More' checkbox using its generated ID
                     if (e.target.id === 'benefit-其他') { 
                         if (e.target.checked) {
                             otherBenefitsContainer.classList.remove('hidden');
@@ -789,6 +842,20 @@
         }
         initDiscussionSection();
         // --- END DISCUSSION SECTION LOGIC ---
+
+         // --- CERTIFICATION LOGIC ---
+        // Moved declaration to top with other consts
+        // const certificationCodeSpan = document.getElementById('certification-code'); 
+
+        // Moved this function definition before initCardGame call
+        // function updateCertificationCodeDisplay() { ... }
+
+        function initCertificationSection() {
+             updateCertificationCodeDisplay(); // Initial display
+             // Button link is handled directly in HTML's <a> tag
+        }
+        initCertificationSection(); // Initialize this section
+        // --- END CERTIFICATION LOGIC ---
 
         // --- EXPORT LOGIC ---
         function exportResults() {
@@ -841,7 +908,7 @@
                      }
                 });
                 htmlContent += `</ul>`;
-                 const otherDangerCheckbox = document.getElementById('danger-更多'); // Check the element exists
+                 const otherDangerCheckbox = document.getElementById('danger-更多'); 
                  if (otherDangerCheckbox && otherDangerCheckbox.checked && !otherDangerDetailsAdded) {
                      htmlContent += `<p>已勾選「更多」，但未填寫說明。</p>`;
                  }
@@ -857,7 +924,6 @@
                 let otherBenefitDetailsAdded = false;
                 selectedBenefits.forEach(benefitCheckbox => {
                      htmlContent += `<li>${benefitCheckbox.value}</li>`;
-                      // Use the generated ID to check if it's the 'Other' checkbox
                      if (benefitCheckbox.id === 'benefit-其他') { 
                         const otherBenefitInputs = document.querySelectorAll('#other-benefits-details input');
                         otherBenefitInputs.forEach((input, index) => {
@@ -869,8 +935,7 @@
                      }
                 });
                 htmlContent += `</ul>`;
-                 // Check the actual checkbox element's checked state
-                 const otherBenefitCheckbox = document.getElementById('benefit-其他'); // Check element exists
+                 const otherBenefitCheckbox = document.getElementById('benefit-其他'); 
                  if (otherBenefitCheckbox && otherBenefitCheckbox.checked && !otherBenefitDetailsAdded) {
                      htmlContent += `<p>已勾選「其他」，但未填寫說明。</p>`;
                  }
@@ -888,9 +953,12 @@
 
             // Stage 7: Quiz Score
             htmlContent += `<h2>第七階段：小測驗分數</h2>`;
-            // Ensure score is treated as a number, provide fallback
              const finalScore = typeof score === 'number' ? Math.round(score) : '尚未計算';
             htmlContent += `<p><span class="label">最終分數：</span> ${finalScore}</p>`;
+
+             // Stage 9: Certification Code
+             htmlContent += `<h2>第九階段：永續點數認證碼</h2>`;
+             htmlContent += `<p><span class="label">您的認證碼：</span> ${selectedCertificationCode || '---'}</p>`;
 
 
             htmlContent += `</body></html>`;
@@ -903,7 +971,6 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-             // Clean up the object URL
              URL.revokeObjectURL(link.href);
         }
 
@@ -1369,19 +1436,23 @@
         }
         
         // --- Add checks for essential elements before calling init ---
-        if (document.getElementById('scene') && 
-            document.getElementById('facilities-list') &&
-            document.getElementById('feedback-modal') &&
-            document.getElementById('sroi-modal') &&
-            document.getElementById('connection-counter') &&
-            document.getElementById('connection-canvas') &&
-            document.getElementById('animal-pen') &&
-            document.getElementById('magic-wand-cursor') &&
-            document.getElementById('score-display')) 
-        {
-             init(); // Call the main init function only if elements exist
+        // Ensure all required elements are present before running the main game logic
+        const requiredElementIds = [
+            'scene', 'facilities-list', 'feedback-modal', 'sroi-modal', 
+            'connection-counter', 'connection-canvas', 'animal-pen', 
+            'magic-wand-cursor', 'score-display', 'card-grid', 
+            'partner-grid', 'field-type-grid', 'danger-grid', 
+            'benefits-grid', 'discussion-section', 'quiz-completion-section',
+            'export-button', 'certification-section' 
+        ];
+        const allElementsExist = requiredElementIds.every(id => document.getElementById(id));
+
+        if (allElementsExist) {
+             init(); // Call the main init function only if all elements exist
         } else {
-            console.error("One or more essential game elements are missing from the DOM.");
+             // Find which elements are missing for easier debugging
+             const missingElements = requiredElementIds.filter(id => !document.getElementById(id));
+            console.error("One or more essential game elements are missing from the DOM:", missingElements);
         }
         
     }); 
