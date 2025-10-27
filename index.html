@@ -734,7 +734,7 @@
                 const optionLabel = document.createElement('label');
                 optionLabel.className = 'danger-option';
                  // Ensure ID is safe for querySelector
-                const dangerId = `danger-${danger.replace(/[\s\W]+/g, '-')}`; 
+                const dangerId = `danger-${danger.replace(/\s+/g, '-')}`; // FIX: Changed regex from /[\s\W]+/g to /\s+/g to preserve CJK chars
                 optionLabel.setAttribute('for', dangerId); 
                 
                 optionLabel.innerHTML = `
@@ -777,9 +777,9 @@
                  const otherLabel = otherCheckbox.closest('.danger-option');
                  if(otherLabel){
                      otherLabel.addEventListener('click', (e)=>{
-                          if(e.target.tagName !== 'INPUT' && !otherCheckbox.checked){
-                              otherCheckbox.checked = true;
-                              otherCheckbox.dispatchEvent(new Event('change'));
+                         if(e.target.tagName !== 'INPUT' && !otherCheckbox.checked){
+                             otherCheckbox.checked = true;
+                             otherCheckbox.dispatchEvent(new Event('change'));
                          }
                      });
                  }
@@ -807,7 +807,7 @@
             ];
 
             benefits.forEach(benefit => {
-                const benefitId = `benefit-${benefit.replace(/[\s\W]+/g, '-')}`; 
+                const benefitId = `benefit-${benefit.replace(/\s+/g, '-')}`; // FIX: Changed regex from /[\s\W]+/g to /\s+/g to preserve CJK chars
                 const optionLabel = document.createElement('label');
                 optionLabel.className = 'benefit-option';
                 optionLabel.setAttribute('for', benefitId); 
@@ -857,9 +857,9 @@
                  const otherLabel = otherCheckbox.closest('.benefit-option');
                  if(otherLabel){
                      otherLabel.addEventListener('click', (e)=>{
-                          if(e.target.tagName !== 'INPUT' && !otherCheckbox.checked){
-                              otherCheckbox.checked = true;
-                              otherCheckbox.dispatchEvent(new Event('change'));
+                         if(e.target.tagName !== 'INPUT' && !otherCheckbox.checked){
+                             otherCheckbox.checked = true;
+                             otherCheckbox.dispatchEvent(new Event('change'));
                          }
                      });
                  }
@@ -969,7 +969,7 @@
                      // Sanitize value
                      const benefitValue = benefitCheckbox.value.replace(/</g, "&lt;").replace(/>/g, "&gt;");
                      htmlContent += `<li>${benefitValue}</li>`;
-                      // Use the generated ID
+                     // Use the generated ID
                      if (benefitCheckbox.id === 'benefit-更多') { 
                         const otherBenefitInputs = document.querySelectorAll('#other-benefits-details input');
                         otherBenefitInputs.forEach((input, index) => {
@@ -1132,9 +1132,9 @@
 
         function renderElements(dataArray, createElementFunc) { // Use descriptive names
              if (!dataArray || typeof dataArray[Symbol.iterator] !== 'function') {
-                // console.error("Invalid data provided to renderElements:", dataArray); // Optional: Keep for debugging
-                return; 
-            }
+                 // console.error("Invalid data provided to renderElements:", dataArray); // Optional: Keep for debugging
+                 return; 
+             }
             dataArray.forEach(item => { 
                 const element = createElementFunc(item); // Use descriptive name
                 if (element && element.classList.contains("facility")) {
@@ -1396,11 +1396,11 @@
                     let sroiHtml = ""; 
                     if (facilityData.sroiFarms) {
                         sroiHtml = `
-                    <div class="mt-4 p-3 border-2 border-green-600 bg-green-50 rounded-lg">
-                        <p class="font-bold text-green-800">⭐ 已完成本項設施並計算SROI之農場：</p>
-                        <p class="text-gray-700">${facilityData.sroiFarms}</p>
-                    </div>
-                    `;
+                        <div class="mt-4 p-3 border-2 border-green-600 bg-green-50 rounded-lg">
+                            <p class="font-bold text-green-800">⭐ 已完成本項設施並計算SROI之農場：</p>
+                            <p class="text-gray-700">${facilityData.sroiFarms}</p>
+                        </div>
+                        `;
                     }
                     if (modalContent) { 
                          modalContent.innerHTML = `
@@ -1414,8 +1414,8 @@
                                 <div class="text-gray-700 leading-relaxed">${facilityData.howto || ''}</div>
                             </div>
                              <div class="mt-4 p-3 border-2 border-blue-400 bg-blue-50 rounded-lg">
-                                <p class="text-blue-800">因為您設置了生態保護措施，注意農村畫布中的驚嘆號會逐漸縮小；這些干擾生態的農業生產行為並不是消失了，而是因為友善生態，讓原有的干擾對生態的影響降得更低了!這樣良善的循環中，農友漸漸受益於生態，化學資材的使用也會逐漸降低!</p>
-                            </div>
+                                 <p class="text-blue-800">因為您設置了生態保護措施，注意農村畫布中的驚嘆號會逐漸縮小；這些干擾生態的農業生產行為並不是消失了，而是因為友善生態，讓原有的干擾對生態的影響降得更低了!這樣良善的循環中，農友漸漸受益於生態，化學資材的使用也會逐漸降低!</p>
+                             </div>
                             ${sroiHtml}
                         </div>
                         `;
@@ -1520,4 +1520,5 @@
     </script>
 </body>
 </html>
+
 
